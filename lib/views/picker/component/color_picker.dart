@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:video_editor_overlay/common/constants.dart';
 import 'package:video_editor_overlay/views/picker/component/selected_color_indicator.dart';
 import 'package:video_editor_overlay/views/picker/component/vertical_color_bar.dart';
 
@@ -12,19 +13,6 @@ class ColorPickerOverlay extends StatefulWidget {
 class _ColorPickerOverlayState extends State<ColorPickerOverlay> {
   Color selectedColor = Colors.black; // Default color
 
-  final List<Color> colors = [
-    Colors.red,
-    Colors.green,
-    Colors.blue,
-    Colors.yellow,
-    Colors.orange,
-    Colors.purple,
-    Colors.pink,
-    Colors.brown,
-    Colors.grey,
-    Colors.black, // Include the default color
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -36,11 +24,6 @@ class _ColorPickerOverlayState extends State<ColorPickerOverlay> {
             alignment: Alignment.centerLeft,
             child: VerticalColorBar(
               colors: colors,
-              onColorSelected: (color) {
-                setState(() {
-                  selectedColor = color;
-                });
-              },
             ),
           ),
         ),

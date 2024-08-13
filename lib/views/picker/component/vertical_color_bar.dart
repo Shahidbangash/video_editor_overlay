@@ -4,12 +4,11 @@ import 'package:video_editor_overlay/views/picker/color_picker_plugin.dart';
 
 class VerticalColorBar extends StatelessWidget {
   final List<Color> colors;
-  final ValueChanged<Color> onColorSelected;
+  // final ValueChanged<Color> onColorSelected;
 
   const VerticalColorBar({
     super.key,
     required this.colors,
-    required this.onColorSelected,
   });
 
   @override
