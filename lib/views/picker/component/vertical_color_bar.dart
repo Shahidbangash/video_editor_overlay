@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:video_editor_overlay/views/picker/color_picker_plugin.dart';
 
 class VerticalColorBar extends StatelessWidget {
   final List<Color> colors;
@@ -12,24 +14,21 @@ class VerticalColorBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      // margin: const EdgeInsets.symmetric(vertical: 50),
-      // width: 50,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: colors.map((color) {
-          return GestureDetector(
-            onTap: () {
-              onColorSelected(color);
-            },
-            child: Container(
-              width: 50,
-              height: 40,
-              color: color,
-            ),
-          );
-        }).toList(),
-      ),
+    final ColorPickerCubit colorPickerCubit = context.read<ColorPickerCubit>();
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: colors.map((color) {
+        return GestureDetector(
+          onTap: () {
+            colorPickerCubit.selectColor(color);
+          },
+          child: Container(
+            width: 50,
+            height: 40,
+            color: color,
+          ),
+        );
+      }).toList(),
     );
   }
 }
