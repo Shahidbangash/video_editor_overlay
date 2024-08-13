@@ -18,7 +18,7 @@ class MainApp extends StatelessWidget {
           children: [
             DrawCurveOverlay(), // Custom Painter for drawing lines
 
-            // ColorPickerOverlay(), // Color picker
+            ColorPickerOverlay(), // Color picker
             // DraggableText(), // Draggable and resizable text
           ],
         ),
