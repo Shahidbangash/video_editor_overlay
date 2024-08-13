@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:video_editor_overlay/views/picker/color_picker_plugin.dart';
 
 class DrawCurveOverlay extends StatefulWidget {
   const DrawCurveOverlay({super.key});
@@ -32,9 +34,16 @@ class _DrawCurveOverlayState extends State<DrawCurveOverlay> {
       },
       child: Stack(
         children: [
-          CustomPaint(
-            size: Size.infinite,
-            painter: CurvePainter(paths: paths),
+          BlocBuilder<ColorPickerCubit, Color>(
+            builder: (context, state) {
+              return CustomPaint(
+                size: Size.infinite,
+                painter: CurvePainter(
+                  paths: paths,
+                  color: state,
+                ),
+              );
+            },
           ),
           Positioned(
             top: 60,
