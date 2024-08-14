@@ -2,6 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:video_editor_overlay/views/picker/color_picker_plugin.dart';
 
+class PathWithColor {
+  final List<Offset> path;
+  final Color color;
+
+  PathWithColor({required this.path, required this.color});
+}
+
 class DrawCurveOverlay extends StatefulWidget {
   const DrawCurveOverlay({super.key});
 
@@ -10,7 +17,7 @@ class DrawCurveOverlay extends StatefulWidget {
 }
 
 class _DrawCurveOverlayState extends State<DrawCurveOverlay> {
-  List<List<Offset>> paths = []; // List of paths, each path is a list of points
+  List<PathWithColor> pathsWithColors = []; // List of paths with their colors
   List<Offset> currentPath = [];
 
   @override
@@ -27,8 +34,10 @@ class _DrawCurveOverlayState extends State<DrawCurveOverlay> {
         });
       },
       onPanEnd: (details) {
+        final currentColor = context.read<ColorPickerCubit>().state;
         setState(() {
-          paths.add(currentPath);
+          pathsWithColors
+              .add(PathWithColor(path: currentPath, color: currentColor));
           currentPath = [];
         });
       },
@@ -38,10 +47,7 @@ class _DrawCurveOverlayState extends State<DrawCurveOverlay> {
             builder: (context, state) {
               return CustomPaint(
                 size: Size.infinite,
-                painter: CurvePainter(
-                  paths: paths,
-                  color: state,
-                ),
+                painter: CurvePainter(pathsWithColors: pathsWithColors),
               );
             },
           ),
@@ -60,33 +66,28 @@ class _DrawCurveOverlayState extends State<DrawCurveOverlay> {
 
   void _undoLastPath() {
     setState(() {
-      if (paths.isNotEmpty) {
-        paths.removeLast();
+      if (pathsWithColors.isNotEmpty) {
+        pathsWithColors.removeLast();
       }
     });
   }
 }
 
 class CurvePainter extends CustomPainter {
-  final List<List<Offset>> paths;
+  final List<PathWithColor> pathsWithColors;
 
-  final Color color;
-  final double strokeWidth;
-
-  CurvePainter({
-    required this.paths,
-    this.color = Colors.blue,
-    this.strokeWidth = 4.0,
-  });
+  CurvePainter({required this.pathsWithColors});
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = strokeWidth
-      ..style = PaintingStyle.stroke;
+    for (var pathWithColor in pathsWithColors) {
+      final paint = Paint()
+        ..color = pathWithColor.color
+        ..strokeWidth = 4.0
+        ..style = PaintingStyle.stroke;
 
-    for (var pathPoints in paths) {
+      final pathPoints = pathWithColor.path;
+
       if (pathPoints.isNotEmpty) {
         Path path = Path();
         path.moveTo(pathPoints[0].dx, pathPoints[0].dy);
@@ -98,8 +99,6 @@ class CurvePainter extends CustomPainter {
         canvas.drawPath(path, paint);
       }
     }
-
-    // canvas.drawPath(path, paint);
   }
 
   @override
