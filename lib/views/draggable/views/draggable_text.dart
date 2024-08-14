@@ -170,12 +170,16 @@ class DraggableText extends StatelessWidget {
                             ),
                           ),
                         )
-                      : Text(
-                          state.text,
-                          style: TextStyle(
-                            fontSize: state.textSize,
-                            color: context.read<ColorPickerCubit>().state,
-                          ),
+                      : BlocBuilder<ColorPickerCubit, Color>(
+                          builder: (context, colorState) {
+                            return Text(
+                              state.text,
+                              style: TextStyle(
+                                fontSize: state.textSize,
+                                color: colorState,
+                              ),
+                            );
+                          },
                         ),
                 ),
               ),
