@@ -19,6 +19,7 @@ class MainApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (_) => ColorPickerCubit()),
         BlocProvider(create: (_) => EditingModeCubit()),
+        BlocProvider(create: (_) => DraggableTextCubit()),
       ],
       child: MaterialApp(
         title: 'Video Editor',
