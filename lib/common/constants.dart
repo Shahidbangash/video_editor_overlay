@@ -12,3 +12,5 @@ final List<Color> colors = [
   Colors.grey,
   Colors.black, // Include the default color
 ];
+
+enum EditingMode { textDrag, curveDraw }

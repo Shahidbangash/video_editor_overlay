@@ -46,8 +46,8 @@ class _DrawCurveOverlayState extends State<DrawCurveOverlay> {
             },
           ),
           Positioned(
-            top: 60,
-            right: 20,
+            // top: MediaQuery.of(context).size.height * 0.2,
+            // right: 20,
             child: FloatingActionButton(
               onPressed: _undoLastPath,
               child: const Icon(Icons.undo),
