@@ -20,9 +20,10 @@ class MainApp extends StatelessWidget {
         BlocProvider(create: (_) => ColorPickerCubit()),
         BlocProvider(create: (_) => EditingModeCubit()),
         BlocProvider(create: (_) => DraggableTextCubit()),
+        BlocProvider(create: (_) => CurveDrawingCubit()),
       ],
       child: MaterialApp(
-        title: 'Video Editor',
+        title: 'Video Editor Overlay',
         home: Scaffold(
           appBar: AppBar(
             title: const Text('Video Editor'),
