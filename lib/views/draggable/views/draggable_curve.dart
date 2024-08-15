@@ -130,15 +130,6 @@ class DrawCurveOverlay extends StatelessWidget {
               );
             },
           ),
-          Positioned(
-            left: 20,
-            child: FloatingActionButton(
-              onPressed: () {
-                context.read<CurveDrawingCubit>().undoLastPath();
-              },
-              child: const Icon(Icons.undo),
-            ),
-          ),
         ],
       ),
     );
