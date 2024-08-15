@@ -26,21 +26,23 @@ class ButterFlyAssetVideo extends StatelessWidget {
 
           final controller = state.controller;
 
-          return Container(
-            padding: const EdgeInsets.all(20),
-            child: AspectRatio(
-              aspectRatio: controller!.value.aspectRatio,
-              child: Stack(
-                alignment: Alignment.bottomCenter,
-                children: <Widget>[
-                  VideoPlayer(controller),
-                  _ControlsOverlay(controller: controller),
-                  VideoProgressIndicator(
-                    controller,
-                    allowScrubbing: true,
-                  ),
-                ],
-              ),
+          // controller!.pause();
+          if (controller == null) {
+            return const SizedBox();
+          }
+          return SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height - kToolbarHeight - 100,
+            child: Stack(
+              alignment: Alignment.bottomCenter,
+              children: <Widget>[
+                VideoPlayer(controller),
+                _ControlsOverlay(controller: controller),
+                VideoProgressIndicator(
+                  controller,
+                  allowScrubbing: true,
+                ),
+              ],
             ),
           );
         },
