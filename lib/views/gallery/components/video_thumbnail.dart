@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:video_editor_overlay/models/video_player_state.dart';
+import 'package:video_editor_overlay/views/editing_overlay/editing_overlay_plugin.dart';
 import 'package:video_editor_overlay/views/gallery/cubit/video_player_cubit.dart';
+import 'package:video_editor_overlay/views/picker/color_picker_plugin.dart';
 import 'package:video_player/video_player.dart';
+import 'package:video_editor_overlay/views/draggable/draggable_plugin.dart';
 
-class ButterFlyAssetVideo extends StatelessWidget {
+class ButterFlyAssetVideo extends StatefulWidget {
   const ButterFlyAssetVideo({
     super.key,
     this.assetPath,
@@ -12,11 +14,17 @@ class ButterFlyAssetVideo extends StatelessWidget {
   final String? assetPath;
 
   @override
+  State<ButterFlyAssetVideo> createState() => _ButterFlyAssetVideoState();
+}
+
+class _ButterFlyAssetVideoState extends State<ButterFlyAssetVideo> {
+  bool isEditing = false;
+  @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => VideoPlayerCubit()
         ..initializeVideo(
-          assetPath ?? 'assets/videos/food_video1.mov',
+          widget.assetPath ?? 'assets/videos/food_video1.mov',
         ),
       child: BlocBuilder<VideoPlayerCubit, VideoPlayerState>(
         builder: (context, state) {
@@ -37,11 +45,86 @@ class ButterFlyAssetVideo extends StatelessWidget {
               alignment: Alignment.bottomCenter,
               children: <Widget>[
                 VideoPlayer(controller),
+                BlocBuilder<EditingModeCubit, EditingMode>(
+                  // bloc: ,
+                  builder: (context, state) {
+                    return Stack(
+                      children: [
+                        // if (state == EditingMode.textDrag)
+                        // if (state == EditingMode.curveDraw)
+                        DrawCurveOverlay(
+                          isViewOnly: !isEditing,
+                        ), // Custom Painter for drawing lines
+                        const DraggableText(),
+                        if (isEditing) ...[
+                          const ColorPickerOverlay(), // Color picker
+                          Positioned(
+                            right: 4,
+                            top: 80,
+                            child: const EditingModeOverlay(),
+                          )
+                        ], // Editing mode selector
+                      ],
+                    );
+                  },
+                ),
                 _ControlsOverlay(controller: controller),
                 VideoProgressIndicator(
                   controller,
                   allowScrubbing: true,
                 ),
+                if (!controller.value.isPlaying)
+                  Positioned(
+                    top: 20,
+                    right: 20,
+                    child: FloatingActionButton(
+                      // color: Colors.black.withOpacity(0.5),
+                      // minWidth: 50,
+                      // padding: const EdgeInsets.all(8),
+                      // shape: RoundedRectangleBorder(
+                      //   borderRadius: BorderRadius.circular(50),
+                      // ),
+                      onPressed: () {
+                        // MaterialB
+                        // EditingOverlayScreen();
+                        controller.pause();
+
+                        Future.delayed(
+                          const Duration(milliseconds: 500),
+                          () async {
+                            if (isEditing) {
+                              isEditing = !isEditing;
+                              setState(() {});
+                              return;
+                            }
+                            if (controller.value.isPlaying) {
+                              await controller.pause();
+                            }
+
+                            if (context.mounted) {
+                              setState(() {
+                                isEditing = !isEditing;
+                              });
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     builder: (context) =>
+                              //         const EditingOverlayScreen(),
+                              //   ),
+                              // );
+                            }
+                          },
+                        );
+                        return;
+                      },
+                      // color: Colors.black.withOpacity(0.5),
+                      child: Icon(
+                        (isEditing) ? Icons.close : Icons.edit,
+                        size: 25,
+                        // color: Colors.white,
+                      ),
+                    ),
+                  ),
               ],
             ),
           );

@@ -102,21 +102,32 @@ import 'package:video_editor_overlay/views/picker/color_picker_plugin.dart';
 // }
 
 class DrawCurveOverlay extends StatelessWidget {
-  const DrawCurveOverlay({super.key});
+  const DrawCurveOverlay({super.key, this.isViewOnly = false});
+  final bool isViewOnly;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onPanStart: (details) {
+        if (isViewOnly) {
+          return;
+        }
         final currentColor = context.read<ColorPickerCubit>().state;
         context
             .read<CurveDrawingCubit>()
             .startPath(details.localPosition, currentColor);
       },
       onPanUpdate: (details) {
+        if (isViewOnly) {
+          return;
+        }
         context.read<CurveDrawingCubit>().updatePath(details.localPosition);
       },
       onPanEnd: (details) {
+        if (isViewOnly) {
+          return;
+        }
+
         final currentColor = context.read<ColorPickerCubit>().state;
         context.read<CurveDrawingCubit>().endPath(currentColor);
       },

@@ -4,7 +4,7 @@ import 'package:video_editor_overlay/views/gallery/gallery_plugin.dart';
 import 'package:video_editor_overlay/views/picker/color_picker_plugin.dart';
 
 import 'components/editing_mode/editing_mode_widget.dart';
-import 'views/editing_overlay/editing_overlay.dart';
+import 'views/editing_overlay/editing_overlay_plugin.dart';
 
 void main() {
   runApp(const MainApp());
