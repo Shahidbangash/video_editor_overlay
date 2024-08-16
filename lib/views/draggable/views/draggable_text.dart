@@ -109,7 +109,9 @@ import 'package:video_editor_overlay/views/draggable/draggable_plugin.dart';
 import 'package:video_editor_overlay/views/picker/color_picker_plugin.dart';
 
 class DraggableText extends StatelessWidget {
-  const DraggableText({super.key});
+  const DraggableText({super.key, this.isViewOnly = false});
+
+  final bool isViewOnly;
 
   @override
   Widget build(BuildContext context) {
@@ -127,12 +129,18 @@ class DraggableText extends StatelessWidget {
               left: state.offset.dx,
               top: state.offset.dy,
               child: GestureDetector(
-                onPanUpdate: (details) {
+                onPanUpdate: (DragUpdateDetails details) {
+                  if (isViewOnly) {
+                    return;
+                  }
                   context
                       .read<DraggableTextCubit>()
                       .updatePosition(state.offset + details.delta);
                 },
                 onDoubleTap: () {
+                  if (isViewOnly) {
+                    return;
+                  }
                   context.read<DraggableTextCubit>().toggleEditingMode(true);
                 },
                 child: Container(

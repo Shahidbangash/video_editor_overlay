@@ -55,13 +55,15 @@ class _ButterFlyAssetVideoState extends State<ButterFlyAssetVideo> {
                         DrawCurveOverlay(
                           isViewOnly: !isEditing,
                         ), // Custom Painter for drawing lines
-                        const DraggableText(),
+                        DraggableText(
+                          isViewOnly: !isEditing,
+                        ),
                         if (isEditing) ...[
                           const ColorPickerOverlay(), // Color picker
-                          Positioned(
+                          const Positioned(
                             right: 4,
                             top: 80,
-                            child: const EditingModeOverlay(),
+                            child: EditingModeOverlay(),
                           )
                         ], // Editing mode selector
                       ],
@@ -78,15 +80,7 @@ class _ButterFlyAssetVideoState extends State<ButterFlyAssetVideo> {
                     top: 20,
                     right: 20,
                     child: FloatingActionButton(
-                      // color: Colors.black.withOpacity(0.5),
-                      // minWidth: 50,
-                      // padding: const EdgeInsets.all(8),
-                      // shape: RoundedRectangleBorder(
-                      //   borderRadius: BorderRadius.circular(50),
-                      // ),
                       onPressed: () {
-                        // MaterialB
-                        // EditingOverlayScreen();
                         controller.pause();
 
                         Future.delayed(
@@ -105,23 +99,14 @@ class _ButterFlyAssetVideoState extends State<ButterFlyAssetVideo> {
                               setState(() {
                                 isEditing = !isEditing;
                               });
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (context) =>
-                              //         const EditingOverlayScreen(),
-                              //   ),
-                              // );
                             }
                           },
                         );
                         return;
                       },
-                      // color: Colors.black.withOpacity(0.5),
                       child: Icon(
                         (isEditing) ? Icons.close : Icons.edit,
                         size: 25,
-                        // color: Colors.white,
                       ),
                     ),
                   ),
