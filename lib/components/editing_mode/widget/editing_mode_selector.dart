@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:video_editor_overlay/common/constants.dart';
 import 'package:video_editor_overlay/components/editing_mode/editing_mode_widget.dart';
+import 'package:video_editor_overlay/models/draggable_text_state.dart';
 import 'package:video_editor_overlay/views/draggable/draggable_plugin.dart';
 
 class EditingModeSelector extends StatelessWidget {
@@ -29,6 +30,11 @@ class EditingModeSelector extends StatelessWidget {
               const SizedBox(height: 16),
               FloatingActionButton(
                 onPressed: () {
+                  final draggableTextCubit = context.read<DraggableTextCubit>();
+
+                  if (draggableTextCubit.state == null) {
+                    draggableTextCubit.initText();
+                  }
                   context
                       .read<EditingModeCubit>()
                       .selectMode(EditingMode.textDrag);

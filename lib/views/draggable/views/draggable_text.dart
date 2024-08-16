@@ -116,8 +116,11 @@ class DraggableText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = TextEditingController();
-    return BlocBuilder<DraggableTextCubit, DraggableTextState>(
+    return BlocBuilder<DraggableTextCubit, DraggableTextState?>(
       builder: (context, state) {
+        if (state == null) {
+          return const SizedBox();
+        }
         controller.text = state.text;
         controller.selection = TextSelection(
           baseOffset: 0,

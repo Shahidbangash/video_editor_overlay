@@ -1,10 +1,17 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:video_editor_overlay/models/video_player_state.dart';
+import 'package:video_editor_overlay/views/draggable/draggable_plugin.dart';
 import 'package:video_editor_overlay/views/editing_overlay/editing_overlay_plugin.dart';
 import 'package:video_editor_overlay/views/gallery/cubit/video_player_cubit.dart';
 import 'package:video_editor_overlay/views/picker/color_picker_plugin.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_editor_overlay/views/draggable/draggable_plugin.dart';
+// import 'dart:io';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 class ButterFlyAssetVideo extends StatefulWidget {
   const ButterFlyAssetVideo({
@@ -19,6 +26,7 @@ class ButterFlyAssetVideo extends StatefulWidget {
 
 class _ButterFlyAssetVideoState extends State<ButterFlyAssetVideo> {
   bool isEditing = false;
+  GlobalKey<State<StatefulWidget>> screenshotKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -38,6 +46,11 @@ class _ButterFlyAssetVideoState extends State<ButterFlyAssetVideo> {
           if (controller == null) {
             return const SizedBox();
           }
+
+          final CurveDrawingCubit curveDrawingCubit =
+              context.read<CurveDrawingCubit>();
+          final DraggableTextCubit draggableTextCubit =
+              context.read<DraggableTextCubit>();
           return SizedBox(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height - kToolbarHeight - 100,
@@ -53,26 +66,29 @@ class _ButterFlyAssetVideoState extends State<ButterFlyAssetVideo> {
                   ),
                   child: BlocBuilder<EditingModeCubit, EditingMode>(
                     // bloc: ,
-                    builder: (context, state) {
-                      return Stack(
-                        children: [
-                          // if (state == EditingMode.textDrag)
-                          // if (state == EditingMode.curveDraw)
-                          DrawCurveOverlay(
-                            isViewOnly: !isEditing,
-                          ), // Custom Painter for drawing lines
-                          DraggableText(
-                            isViewOnly: !isEditing,
-                          ),
-                          if (isEditing) ...[
-                            const ColorPickerOverlay(), // Color picker
-                            const Positioned(
-                              right: 4,
-                              top: 80,
-                              child: EditingModeOverlay(),
-                            )
-                          ], // Editing mode selector
-                        ],
+                    builder: (context, EditingMode state) {
+                      return RepaintBoundary(
+                        child: Stack(
+                          key: screenshotKey,
+                          children: [
+                            // if (state == EditingMode.textDrag)
+                            // if (state == EditingMode.curveDraw)
+                            DrawCurveOverlay(
+                              isViewOnly: !isEditing,
+                            ), // Custom Painter for drawing lines
+                            DraggableText(
+                              isViewOnly: !isEditing,
+                            ),
+                            if (isEditing) ...[
+                              const ColorPickerOverlay(), // Color picker
+                              const Positioned(
+                                right: 4,
+                                top: 80,
+                                child: EditingModeOverlay(),
+                              )
+                            ], // Editing mode selector
+                          ],
+                        ),
                       );
                     },
                   ),
@@ -113,6 +129,72 @@ class _ButterFlyAssetVideoState extends State<ButterFlyAssetVideo> {
                       },
                       child: Icon(
                         (isEditing) ? Icons.close : Icons.edit,
+                        size: 25,
+                      ),
+                    ),
+                  ),
+                if ((curveDrawingCubit.state.isNotEmpty ||
+                        draggableTextCubit.state != null) &&
+                    !isEditing)
+                  Positioned(
+                    top: 20,
+                    left: 20,
+                    child: FloatingActionButton(
+                      onPressed: () async {
+                        // RenderObject? boundary =
+                        //     screenshotKey.currentContext?.findRenderObject();
+
+                        // if (boundary == null) {
+                        //   return;
+                        // }
+                        // boundary = boundary as RenderRepaintBoundary;
+
+                        RenderObject? renderObject = screenshotKey
+                            .currentContext
+                            ?.findRenderObject()
+                            ?.parent;
+
+                        if (renderObject == null) {
+                          return;
+                        }
+                        renderObject = renderObject as RenderRepaintBoundary;
+
+                        ui.Image image = await renderObject.toImage();
+
+                        ByteData? byteData = await image.toByteData(
+                            format: ui.ImageByteFormat.png);
+
+                        Uint8List pngBytes = byteData!.buffer.asUint8List();
+                        log('PNG Bytes : $pngBytes');
+                        if (context.mounted) {
+                          // setState(() {});
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: const Text('Image Preview'),
+                                content: Image.memory(pngBytes),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: const Text('Close'),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        }
+
+                        // Uint8List pngBytes = byteData.buffer.asUint8List();
+                        // print(pngBytes);
+                        // var filePath =
+                        //     await ImagePickerSaver.saveFile(fileData: pngBytes);
+                        // print(filePath);
+                      },
+                      child: Icon(
+                        Icons.share,
                         size: 25,
                       ),
                     ),
