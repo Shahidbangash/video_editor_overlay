@@ -18,7 +18,7 @@ class _ColorPickerOverlayState extends State<ColorPickerOverlay> {
     return Align(
       alignment: Alignment.bottomRight,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         child: VerticalColorBar(colors: colors),
       ),
     );

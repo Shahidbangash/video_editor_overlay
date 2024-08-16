@@ -185,6 +185,13 @@ class DraggableText extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: state.textSize,
                                 color: colorState,
+                                shadows: [
+                                  Shadow(
+                                    color: Colors.black.withOpacity(0.2),
+                                    blurRadius: 2,
+                                    offset: const Offset(1, 1),
+                                  ),
+                                ],
                               ),
                             );
                           },

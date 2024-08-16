@@ -45,30 +45,37 @@ class _ButterFlyAssetVideoState extends State<ButterFlyAssetVideo> {
               alignment: Alignment.bottomCenter,
               children: <Widget>[
                 VideoPlayer(controller),
-                BlocBuilder<EditingModeCubit, EditingMode>(
-                  // bloc: ,
-                  builder: (context, state) {
-                    return Stack(
-                      children: [
-                        // if (state == EditingMode.textDrag)
-                        // if (state == EditingMode.curveDraw)
-                        DrawCurveOverlay(
-                          isViewOnly: !isEditing,
-                        ), // Custom Painter for drawing lines
-                        DraggableText(
-                          isViewOnly: !isEditing,
-                        ),
-                        if (isEditing) ...[
-                          const ColorPickerOverlay(), // Color picker
-                          const Positioned(
-                            right: 4,
-                            top: 80,
-                            child: EditingModeOverlay(),
-                          )
-                        ], // Editing mode selector
-                      ],
-                    );
-                  },
+                Container(
+                  height:
+                      MediaQuery.of(context).size.height - kToolbarHeight - 100,
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.3),
+                  ),
+                  child: BlocBuilder<EditingModeCubit, EditingMode>(
+                    // bloc: ,
+                    builder: (context, state) {
+                      return Stack(
+                        children: [
+                          // if (state == EditingMode.textDrag)
+                          // if (state == EditingMode.curveDraw)
+                          DrawCurveOverlay(
+                            isViewOnly: !isEditing,
+                          ), // Custom Painter for drawing lines
+                          DraggableText(
+                            isViewOnly: !isEditing,
+                          ),
+                          if (isEditing) ...[
+                            const ColorPickerOverlay(), // Color picker
+                            const Positioned(
+                              right: 4,
+                              top: 80,
+                              child: EditingModeOverlay(),
+                            )
+                          ], // Editing mode selector
+                        ],
+                      );
+                    },
+                  ),
                 ),
                 _ControlsOverlay(controller: controller),
                 VideoProgressIndicator(
