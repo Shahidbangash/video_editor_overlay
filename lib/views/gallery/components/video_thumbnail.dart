@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:path_provider/path_provider.dart';
+// import 'package:tapioca/tapioca.dart';
 import 'package:video_editor_overlay/models/video_player_state.dart';
 import 'package:video_editor_overlay/views/draggable/draggable_plugin.dart';
 import 'package:video_editor_overlay/views/editing_overlay/editing_overlay_plugin.dart';
@@ -165,14 +167,35 @@ class _ButterFlyAssetVideoState extends State<ButterFlyAssetVideo> {
                             format: ui.ImageByteFormat.png);
 
                         Uint8List pngBytes = byteData!.buffer.asUint8List();
-                        log('PNG Bytes : $pngBytes');
+
+                        // final tapiocaBalls = [
+                        //   // TapiocaBall.filter(Filters.pink),
+                        //   TapiocaBall.imageOverlay(
+                        //       pngBytes, image.height, image.width),
+                        //   // TapiocaBall.textOverlay(
+                        //   // "text", 100, 10, 100, Color(0xffffc0cb)),
+                        // ];
+                        // var tempDir = await getTemporaryDirectory();
+                        // final path = '${tempDir.path}/result.mp4';
+                        // final cup =
+                        //     Cup(Content(controller.dataSource), tapiocaBalls);
+
+                        // try {
+                        //   cup.suckUp(path).then((_) {
+                        //     log("finish processing");
+                        //   });
+                        // } catch (error, stackTrace) {
+                        //   log('Error : $error', stackTrace: stackTrace);
+                        // }
+                        // log('PNG Bytes : $pngBytes');
                         if (context.mounted) {
-                          // setState(() {});
+                          setState(() {});
                           showDialog(
                             context: context,
                             builder: (context) {
                               return AlertDialog(
-                                title: const Text('Image Preview'),
+                                title: const Text(
+                                    'Image Overlay preview from Video'),
                                 content: Image.memory(pngBytes),
                                 actions: [
                                   TextButton(
